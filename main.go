@@ -61,13 +61,17 @@ func main() {
 		{Name: "Mars Credit Union", Prefix: "5000"},
 		{Name: "Alfa Credit", Prefix: "8000"},
 	}
-	fmt.Println(DetectBank("4000123456789017", banks)) // → &Bank{Name: "Lunar Bank", ...}
-	fmt.Println(DetectBank("1234567890123456", banks)) // → nil
-	fmt.Println(DetectBank("", banks))
 
-	fmt.Println(LuhnCheck("4000123456789017")) // → true  (валиден)
-	fmt.Println(LuhnCheck("79927398713"))      // → true
-	fmt.Println(LuhnCheck("1234567890123456")) // → false (невалиден по Луне)
-	fmt.Println(LuhnCheck(""))                 // → false
-	fmt.Println(LuhnCheck("4000abc"))          // → false (нецифры)
+	cardNumber := "4000123456789017"
+
+	isValid := LuhnCheck(cardNumber)
+
+	fmt.Println("Валиден по Луне: ", isValid)
+
+	bank := DetectBank(cardNumber, banks)
+	if bank != nil {
+		fmt.Println("Банк: ", bank.Name)
+	} else {
+		fmt.Println("Банк: не определен")
+	}
 }
