@@ -85,6 +85,16 @@ func loadBankData(path string) ([]Bank, error) {
 	return banks, nil
 }
 
+func getUserInput() string {
+	fmt.Print("Введите номер карты (или Enter для выхода):")
+	reader := bufio.NewReader(os.Stdin)
+	input, _ := reader.ReadString('\n')        // читать до нажатия Enter
+	input = strings.TrimSpace(input)           // убрать \n и пробелы по краям
+	input = strings.ReplaceAll(input, " ", "") // убрать все пробелы внутри
+	input = strings.ReplaceAll(input, "-", "") // убрать все дефисы
+	return input
+}
+
 func main() {
 	banks, err := loadBankData("banks.txt")
 	if err != nil {
@@ -93,17 +103,21 @@ func main() {
 	} else {
 		fmt.Println("Загружено банков: ", len(banks))
 	}
+	for {
+		cardNumber := getUserInput()
+		if cardNumber == "" {
+			fmt.Println("Спвсибо, до скорых встречь")
+			break
+		}
+		isValid := LuhnCheck(cardNumber)
 
-	cardNumber := "4000123456789017"
+		fmt.Println("Валиден по Луне: ", isValid)
 
-	isValid := LuhnCheck(cardNumber)
-
-	fmt.Println("Валиден по Луне: ", isValid)
-
-	bank := DetectBank(cardNumber, banks)
-	if bank != nil {
-		fmt.Println("Банк: ", bank.Name)
-	} else {
-		fmt.Println("Банк: не определен")
+		bank := DetectBank(cardNumber, banks)
+		if bank != nil {
+			fmt.Println("Банк: ", bank.Name)
+		} else {
+			fmt.Println("Банк: не определен")
+		}
 	}
 }
