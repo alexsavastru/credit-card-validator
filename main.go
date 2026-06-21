@@ -95,29 +95,58 @@ func getUserInput() string {
 	return input
 }
 
+func validateInput(cardNumber string) error {
+	cardLen := len(cardNumber)
+	if 19 < cardLen || cardLen < 13 {
+		return fmt.Errorf("Номер должен быть от 13 до 19 цифр")
+	}
+
+	for _, r := range cardNumber {
+		if r < '0' || r > '9' {
+			return fmt.Errorf("Номер должен содержать только цифры от 0 до 9")
+		}
+	}
+
+	return nil
+}
+
 func main() {
 	banks, err := loadBankData("banks.txt")
+
 	if err != nil {
 		fmt.Println(err)
 		return
 	} else {
 		fmt.Println("Загружено банков: ", len(banks))
 	}
+
 	for {
 		cardNumber := getUserInput()
+
 		if cardNumber == "" {
-			fmt.Println("Спвсибо, до скорых встречь")
+			fmt.Println("Спасибо, до скорых встречь")
 			break
 		}
+
+		err := validateInput(cardNumber)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
 		isValid := LuhnCheck(cardNumber)
 
-		fmt.Println("Валиден по Луне: ", isValid)
+		if !isValid {
+			fmt.Println("Ошибка проверки Луна")
+			continue
+		}
 
 		bank := DetectBank(cardNumber, banks)
-		if bank != nil {
-			fmt.Println("Банк: ", bank.Name)
+
+		if bank == nil {
+			fmt.Println("Неизвестный банк")
 		} else {
-			fmt.Println("Банк: не определен")
+			fmt.Println("Банк: ", bank.Name)
 		}
 	}
 }
