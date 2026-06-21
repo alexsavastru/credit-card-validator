@@ -89,6 +89,7 @@ func main() {
 	banks, err := loadBankData("banks.txt")
 	if err != nil {
 		fmt.Println(err)
+		return
 	} else {
 		fmt.Println("Загружено банков: ", len(banks))
 	}
