@@ -79,7 +79,7 @@ func loadBankData(path string) ([]Bank, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println("Ошибка при сканировании:", err)
+		return nil, fmt.Errorf("Ошибка при сканировании: %q", err)
 	}
 
 	return banks, nil
